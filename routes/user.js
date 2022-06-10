@@ -4,11 +4,14 @@ const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
 
+router.get("/", (req, res) => res.send("im here!"));
+
 /**
  * Authenticate all incoming requests by middleware
  */
+
 router.use(async function (req, res, next) {
-  if (req.session && req.session.user_id) {
+ if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users").then((users) => {
       if (users.find((x) => x.user_id === req.session.user_id)) {
         req.user_id = req.session.user_id;
@@ -33,47 +36,27 @@ router.post('/favorites', async (req,res,next) => {
     } catch(error){
     next(error);
   }
-})
+});
+
 
 /**
  * This path returns the favorites recipes that were saved by the logged-in user
  */
 router.get('/favorites', async (req,res,next) => {
   try{
-    const user_id = req.session.user_id;
+    //const user_id = req.session.user_id;
     let favorite_recipes = {};
-    const recipes_id = await user_utils.getFavoriteRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    //const recipes_id = await user_utils.getFavoriteRecipes(user_id);
+    //let recipes_id_array = [];
+    //recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    //const results = await recipe_utils.getRecipesPreview(recipes_id_array);
     res.status(200).send(results);
   } catch(error){
     next(error); 
   }
 });
 
-/**
- * This path gets body with owner, time, gradients, preparation, image url and save this recipe in the family recipes list of the logged-in user
- */
-router.post("/family", async (req, res, next) => {
-  try {
-    const user_id = req.session.user_id;
-    let recipe_details = {
-      owner: req.body.owner,
-      time: req.body.time,
-      gradients: req.body.gradients,
-      preparation: req.body.preparation,
-      image_url: req.body.image_url,
-    }
-    await DButils.execQuery(
-      `INSERT INTO familyrecipes VALUES ('${user_id}','${recipe_details.owner}', '${recipe_details.time}', '${recipe_details.gradients}',
-      '${recipe_details.preparation}', '${recipe_details.image_url}')`
-    );
-    res.status(201).send({ message: "family recipe created", success: true });
-  } catch (error) {
-    next(error);
-  }
-});
+
 
 /**
  * This path returns the family recipes that were saved by the logged-in user
@@ -91,6 +74,62 @@ router.post("/family", async (req, res, next) => {
     next(error); 
   }
 });
+
+/**
+ * save recipe in the user recipes list of the logged-in user
+ */
+ router.post("/myrecipe", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    let recipe_details = {
+      title: req.body.title,
+      readyInMinutes: req.body.readyInMinutes,
+      image: req.body.image,
+      vegan: req.body.vegan,
+      vegetarian: req.body.vegetarian,
+      glutenFree: req.body.glutenFree
+    }
+    await DButils.execQuery(
+      `INSERT INTO userrecipes(user_id,title,readyInMinutes,image,popularity,vegan,vagetarian,glutenFree) VALUES ('${user_id}',
+      '${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}', '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}')`
+    );
+    res.status(201).send({ message: "personal recipe created", success: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * This path returns the personal recipes that were saved by the logged-in user
+ */
+ router.get('/myrecipe', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let personal_recipes = {};
+    const recipes_id = await user_utils.getMyRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+/**
+ * This path gets body with recipeId and save this recipe in the viewed list of the logged-in user
+ */
+ router.post('/viewed', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipe_id = req.body.recipeId;
+    await user_utils.markAsViewed(user_id,recipe_id);
+    res.status(200).send("The Recipe successfully saved as viewed");
+    } catch(error){
+    next(error);
+  }
+});
+
 
 router.get("/ThreeLastRecipes", async (req, res, next) => {
   try {

@@ -68,6 +68,14 @@ async function exractPreviewRecipeDetails(recipes_info){
     })
 }
 
+async function getRecipesPreview(recipes_ids_list){
+    let promises = [];
+    recipes_ids_list.map((id) => {
+        promises.push(getRecipeInformation(id));
+    });
+    let info_res = await Promise.all(promises);
+    return exractPreviewRecipeDetails(info_res);
+}
 
 async function getRandomRecipes(){
     const response = await axios.get(`${api_domain}/random`, { //go to spoonacular 
@@ -93,3 +101,4 @@ async function getRandomNumOfRecipes(num){
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getRandomNumOfRecipes = getRandomNumOfRecipes;
+exports.getRecipesPreview = getRecipesPreview;

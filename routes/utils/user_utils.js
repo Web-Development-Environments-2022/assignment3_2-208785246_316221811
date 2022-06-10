@@ -4,6 +4,10 @@ async function markAsFavorite(user_id, recipe_id){
     await DButils.execQuery(`insert into favoriterecipes values ('${user_id}',${recipe_id})`);
 }
 
+async function markAsViewed(user_id, recipe_id){
+    await DButils.execQuery(`insert into lastviewed values ('${user_id}',${recipe_id})`);
+}
+
 async function getFavoriteRecipes(user_id){
     const recipes_id = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}'`);
     return recipes_id;
@@ -11,6 +15,11 @@ async function getFavoriteRecipes(user_id){
 
 async function getFamilyRecipes(user_id){
     const recipes_id = await DButils.execQuery(`select recipe_id from familyrecipes where user_id='${user_id}'`);
+    return recipes_id;
+}
+
+async function getMyRecipes(user_id){
+    const recipes_id = await DButils.execQuery(`select recipe_id from myrecipes where user_id='${user_id}'`);
     return recipes_id;
 }
 
@@ -26,4 +35,6 @@ async function getThreeLastRecipesIds(user_id){
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.getFamilyRecipes = getFamilyRecipes;
+exports.getMyRecipes = getMyRecipes;
+exports.markAsViewed = markAsViewed;
 exports.getThreeLastRecipesIds = getThreeLastRecipesIds;
