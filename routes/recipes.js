@@ -9,7 +9,6 @@ router.get("/", (req, res) => res.send("im here!"));
  */
 router.get("/recipeId", async (req, res, next) => {
   try {
-    //res.send("hello")
     const recipe = await recipes_utils.getRecipeDetails(req.query.recipeId);
     res.send(recipe); //the get returns this
   } catch (error) {
@@ -19,7 +18,6 @@ router.get("/recipeId", async (req, res, next) => {
 
 router.get("/GetRandomRecipes", async (req, res, next) => {
   try {
-    //res.send("GetRandomRecipes")
     const recipes = await recipes_utils.getRandomNumOfRecipes(req.query.num);
     res.send(recipes); //the get returns this
   } catch (error) {

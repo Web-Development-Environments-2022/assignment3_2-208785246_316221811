@@ -9,7 +9,21 @@ async function getFavoriteRecipes(user_id){
     return recipes_id;
 }
 
+async function getFamilyRecipes(user_id){
+    const recipes_id = await DButils.execQuery(`select recipe_id from familyrecipes where user_id='${user_id}'`);
+    return recipes_id;
+}
+
+async function getThreeLastRecipesIds(user_id){
+    let lastRecipes = await DButils.execQuery(`select top 3 recipe_id from lastviewed where user_id='${user_id}' order by time DESC`);
+    let idsArray = await convertToArry(lastRecipes);
+    let recipesData = await recipeUtil.getRecipesInformation(idsArray);
+    let relevantRecipeData = await recipeUtil.extractPrevData(recipesData);
+    return relevantRecipeData;
+    }
 
 
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
+exports.getFamilyRecipes = getFamilyRecipes;
+exports.getThreeLastRecipesIds = getThreeLastRecipesIds;
