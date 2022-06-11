@@ -44,12 +44,12 @@ router.post('/favorites', async (req,res,next) => {
  */
 router.get('/favorites', async (req,res,next) => {
   try{
-    //const user_id = req.session.user_id;
+    const user_id = req.session.user_id;
     let favorite_recipes = {};
-    //const recipes_id = await user_utils.getFavoriteRecipes(user_id);
-    //let recipes_id_array = [];
-    //recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    //const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    const recipes_id = await user_utils.getFavoriteRecipes(user_id);
+    let recipes_id_array = [];
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
     res.status(200).send(results);
   } catch(error){
     next(error); 
@@ -64,12 +64,10 @@ router.get('/favorites', async (req,res,next) => {
  router.get('/family', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    let family_recipes = {};
-    const recipes_id = await user_utils.getFamilyRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
+    const recipes = await user_utils.getFamilyRecipes(user_id);
+    let recipes_array = [];
+    recipes.map((element) => recipes_array.push(element.recipe_id)); //extracting the recipe ids into array
+    res.status(200).send(recipes);
   } catch(error){
     next(error); 
   }
@@ -90,7 +88,7 @@ router.get('/favorites', async (req,res,next) => {
       glutenFree: req.body.glutenFree
     }
     await DButils.execQuery(
-      `INSERT INTO userrecipes(user_id,title,readyInMinutes,image,popularity,vegan,vagetarian,glutenFree) VALUES ('${user_id}',
+      `INSERT INTO userrecipes(user_id,title,readyInMinutes,image,vegan,vegetarian,glutenFree) VALUES ('${user_id}',
       '${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}', '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}')`
     );
     res.status(201).send({ message: "personal recipe created", success: true });
@@ -105,12 +103,10 @@ router.get('/favorites', async (req,res,next) => {
  router.get('/myrecipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    let personal_recipes = {};
     const recipes_id = await user_utils.getMyRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
+    res.status(200).send(recipes_id);
   } catch(error){
     next(error); 
   }
@@ -131,11 +127,14 @@ router.get('/favorites', async (req,res,next) => {
 });
 
 
+/**
+ * This path returns the last three recipes that viewed by the logged-in user
+ */
 router.get("/ThreeLastRecipes", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    let recipesData = await user_utils.getThreeLastRecipesIds(user_id);
-    res.send(recipesData);
+    let recipes = await user_utils.getThreeLastRecipesIds(user_id);
+    res.send(recipes);
   } catch (error) {
     console.log(error);
     next(error);
