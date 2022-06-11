@@ -1,1 +1,1 @@
-SELECT * FROM recipes_schema.users;
+select owner, time, gradients, preparation from familyrecipes where user_id="fsdf"

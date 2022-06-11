@@ -16,6 +16,9 @@ router.get("/recipeId", async (req, res, next) => {
   }
 });
 
+/**
+ * This path returns details of chosen number of random recipes
+ */
 router.get("/GetRandomRecipes", async (req, res, next) => {
   try {
     const recipes = await recipes_utils.getRandomNumOfRecipes(req.query.num);
@@ -24,6 +27,8 @@ router.get("/GetRandomRecipes", async (req, res, next) => {
     next(error);
   }
 });
+
+//TODO:Search
 
 
 module.exports = router;
