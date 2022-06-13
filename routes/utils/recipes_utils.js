@@ -150,7 +150,7 @@ async function searchRecipes(query_search){
 async function getRandomNumOfRecipes(num){
     let random_pool = await getRandomRecipes();
     let filtered_random_recipes = random_pool.data.recipes.filter((random) => (random.instructions != "") && (random.image)) 
-    if(filtered_random_recipes.length < 3){
+    if(filtered_random_recipes.length < num){
         return getRandomNumOfRecipes(num)
     }
     return exractPreviewRecipeDetails(filtered_random_recipes.slice(0, num))
@@ -167,3 +167,5 @@ exports.getRandomNumOfRecipes = getRandomNumOfRecipes;
 exports.getRecipesPreview = getRecipesPreview;
 exports.searchRecipes = searchRecipes;
 exports.getSearchRecipes = getSearchRecipes;
+exports.getRecipeInformation = getRecipeInformation;
+exports.extractFullRecipesDetails = extractFullRecipesDetails;
