@@ -28,7 +28,16 @@ router.get("/GetRandomRecipes", async (req, res, next) => {
   }
 });
 
-//TODO:Search
-
+/**
+ * This path returns details of recipes with instructions
+ */
+router.get("/searchRecipes", async (req, res, next) => {
+  try {
+    const recipes = await recipes_utils.getSearchRecipes(req.query);
+    res.send(recipes);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
