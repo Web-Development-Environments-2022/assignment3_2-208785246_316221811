@@ -21,7 +21,7 @@ async function getFamilyRecipes(user_id){
 }
 
 async function getMyRecipes(user_id){
-    const recipes_id = await DButils.execQuery(`select title, readyInMinutes, image, vegan, vegetarian, glutenFree, popularity from userrecipes where user_id='${user_id}'`);
+    const recipes_id = await DButils.execQuery(`select title, readyInMinutes, image, vegan, vegetarian, glutenFree, popularity, ingredients, instructions, servings from userrecipes where user_id='${user_id}'`);
     return recipes_id;
 }
 
@@ -36,7 +36,7 @@ async function getThreeLastRecipesIds(user_id){
             recipes_results.push(ans);
         }
         else{
-            ans = await DButils.execQuery(`select title, readyInMinutes, image, vegan, vegetarian, glutenFree, popularity from userrecipes where user_id='${user_id}' and recipe_id='${current_recipe_id}'`);
+            ans = await DButils.execQuery(`select title, readyInMinutes, image, vegan, vegetarian, glutenFree, popularity, ingredients, instructions, servings from userrecipes where user_id='${user_id}' and recipe_id='${current_recipe_id}'`);
             if (ans.length != 0){
                 recipes_results.push(ans);
             }

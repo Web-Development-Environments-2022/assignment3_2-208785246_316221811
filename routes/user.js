@@ -85,11 +85,15 @@ router.get('/favorites', async (req,res,next) => {
       image: req.body.image,
       vegan: req.body.vegan,
       vegetarian: req.body.vegetarian,
-      glutenFree: req.body.glutenFree
+      glutenFree: req.body.glutenFree,
+      ingredients: req.body.ingredients,
+      instructions: req.body.instructions,
+      servings: req.body.servings,
     }
     await DButils.execQuery(
-      `INSERT INTO userrecipes(user_id,title,readyInMinutes,image,vegan,vegetarian,glutenFree) VALUES ('${user_id}',
-      '${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}', '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}')`
+      `INSERT INTO userrecipes(user_id,title,readyInMinutes,image,vegan,vegetarian,glutenFree,ingredients,instructions,servings) VALUES ('${user_id}',
+      '${recipe_details.title}', '${recipe_details.readyInMinutes}', '${recipe_details.image}', '${recipe_details.vegan}', '${recipe_details.vegetarian}',
+      '${recipe_details.glutenFree}', '${recipe_details.ingredients}', '${recipe_details.instructions}', '${recipe_details.servings}')`
     );
     res.status(201).send({ message: "personal recipe created", success: true });
   } catch (error) {
