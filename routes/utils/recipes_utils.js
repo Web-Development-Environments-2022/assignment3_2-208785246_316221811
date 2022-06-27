@@ -19,6 +19,25 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
+async function getFullRecipeById(recipe_id) {
+    let recipe_info = await getRecipeInformation(recipe_id);
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, analyzedInstructions, servings, extendedIngredients} = recipe_info.data;
+
+    return {
+        id: id,
+        title: title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        popularity: aggregateLikes,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree,
+        extendedIngredients: extendedIngredients, 
+        analyzedInstructions: analyzedInstructions, 
+        servings: servings,
+        
+    }
+}
 
 
 async function getRecipeDetails(recipe_id) {
@@ -169,3 +188,4 @@ exports.searchRecipes = searchRecipes;
 exports.getSearchRecipes = getSearchRecipes;
 exports.getRecipeInformation = getRecipeInformation;
 exports.extractFullRecipesDetails = extractFullRecipesDetails;
+exports.getFullRecipeById = getFullRecipeById;

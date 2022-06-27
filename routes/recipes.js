@@ -9,7 +9,7 @@ router.get("/", (req, res) => res.send("im here!"));
  */
 router.get("/recipeId", async (req, res, next) => {
   try {
-    const recipe = await recipes_utils.getRecipeDetails(req.query.recipeId);
+    const recipe = await recipes_utils.getFullRecipeById(req.query.recipeId);
     res.send(recipe); //the get returns this
   } catch (error) {
     next(error);
