@@ -28,23 +28,10 @@ async function getMyRecipes(user_id){
 async function getThreeLastRecipesIds(user_id){
     let last_recipes = await DButils.execQuery(`select recipe_id from lastviewed where user_id='${user_id}' order by time desc limit 3`);
     let recipes_results = [];
-    //check if the viewed recipe is family recipe, personal recipe or spoonacular recipe
     for (let i = 0; i < last_recipes.length; i++) {
         current_recipe_id = last_recipes[i].recipe_id;
-        let ans = await DButils.execQuery(`select owner, time, gradients, preparation, imageurl from familyrecipes where user_id='${user_id}' and recipe_id='${current_recipe_id}'`);
-        if (ans.length != 0){
-            recipes_results.push(ans);
-        }
-        else{
-            ans = await DButils.execQuery(`select title, readyInMinutes, image, vegan, vegetarian, glutenFree, popularity, ingredients, instructions, servings from userrecipes where user_id='${user_id}' and recipe_id='${current_recipe_id}'`);
-            if (ans.length != 0){
-                recipes_results.push(ans);
-            }
-            else{
-                const recipe = await recipe_utils.getRecipeDetails(current_recipe_id)
-                recipes_results.push(recipe);
-            }
-        }
+        const recipe = await recipe_utils.getRecipeDetails(current_recipe_id)
+        recipes_results.push(recipe);
     }
     return recipes_results;
     }
