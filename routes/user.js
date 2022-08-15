@@ -146,6 +146,20 @@ router.get("/ThreeLastRecipes", async (req, res, next) => {
 });
 
 /**
+ * This path returns all recipes that viewed by the logged-in user
+ */
+ router.get("/viewed", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    let recipes = await user_utils.getViewedRecipesIds(user_id);
+    res.send(recipes);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+/**
  * This path returns the last recipe that viewed by the logged-in user
  */
  router.get("/lastRecipe", async (req, res, next) => {
